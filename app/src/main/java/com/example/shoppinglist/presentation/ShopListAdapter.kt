@@ -19,7 +19,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_shop_enabled,
+            R.layout.item_shop_disabled,
             parent,
             false
         )
@@ -28,27 +28,40 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
         val shopItem = shopList[position]
-     /*   val status = if (shopItem.enabled) {
+        val status = if (shopItem.enabled) {
             "Active"
         } else {
             "Not active"
-        }*/
+        }
+
+        viewHolder.tvName.text = "${shopItem.name} $status"
+        viewHolder.tvCount.text = shopItem.count.toString()
+
         viewHolder.view.setOnLongClickListener {
             true
         }
-        //if (shopItem.enabled) {
-            viewHolder.tvName.text = shopItem.name //"${shopItem.name} $status"
-            viewHolder.tvCount.text = shopItem.count.toString()
-           // viewHolder.tvName.setTextColor(ContextCompat.getColor(viewHolder.view.context, android.R.color.holo_red_light))
-        //}
+        if (shopItem.enabled) {
+            viewHolder.tvName.setTextColor(ContextCompat.getColor(viewHolder.view.context,
+                android.R.color.system_accent3_800
+            ))
+            viewHolder.tvCount.setTextColor(ContextCompat.getColor(viewHolder.view.context,
+                android.R.color.system_accent3_800
+            ))
+        }
     }
 
-/*    override fun onViewRecycled(viewHolder: ShopItemViewHolder) {
-        super.onViewRecycled(viewHolder)
-        viewHolder.tvName.text = ""
-        viewHolder.tvCount.text = ""
-        viewHolder.tvName.setTextColor(ContextCompat.getColor(viewHolder.view.context, android.R.color.white))
+/*    override fun getItemViewType(position: Int): Int {
+        return position
     }*/
+    override fun onViewRecycled(viewHolder: ShopItemViewHolder) {
+        super.onViewRecycled(viewHolder)
+        viewHolder.tvName.setTextColor(ContextCompat.getColor( viewHolder.view.context,
+            android.R.color.system_accent2_800
+        ))
+        viewHolder.tvCount.setTextColor(ContextCompat.getColor(viewHolder.view.context,
+            android.R.color.system_accent2_800
+        ))
+    }
 
     override fun getItemCount(): Int {
         return shopList.size
