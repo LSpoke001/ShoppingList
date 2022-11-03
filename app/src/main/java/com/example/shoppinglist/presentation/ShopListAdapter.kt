@@ -18,7 +18,11 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     private var count = 0
+
     var onShopItemLongClickListener:((ShopItem) -> Unit)? = null
+    var onShopItemClickListener:((ShopItem)->Unit)? = null
+    var onShopItemSwap:((ShopItem)->Unit)? = null
+
     var shopList = listOf<ShopItem>()
         set(value) {
             field = value
@@ -45,6 +49,9 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         viewHolder.view.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
             true
+        }
+        viewHolder.view.setOnClickListener{
+            onShopItemClickListener?.invoke(shopItem)
         }
 /*        if (shopItem.enabled) {
             viewHolder.tvName.setTextColor(ContextCompat.getColor(viewHolder.view.context,
@@ -85,8 +92,4 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         val tvCount = view.findViewById<TextView>(R.id.tv_count)
     }
 
-    interface OnShopItemLongClickListener{
-
-        fun onShopItemLongClick(shopItem: ShopItem)
-    }
 }
