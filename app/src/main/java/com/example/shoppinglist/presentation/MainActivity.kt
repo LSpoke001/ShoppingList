@@ -9,7 +9,7 @@ import com.example.shoppinglist.R
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: ShopListAdapter
+    private lateinit var shopListAdapter: ShopListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,13 +17,23 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.shopList.observe(this) {
-            adapter.shopList = it
+            shopListAdapter.shopList = it
         }
     }
 
     private fun setupRecyclerView() {
         val rvShopList = findViewById<RecyclerView>(R.id.rv_shop_list)
-        adapter = ShopListAdapter()
-        rvShopList.adapter = adapter
+
+        with(rvShopList){
+            shopListAdapter = ShopListAdapter()
+            rvShopList.adapter = shopListAdapter
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.ENABLED_VIEW,
+                ShopListAdapter.MAX_POOL_SIZE)
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.DISABLED_VIEW,
+                ShopListAdapter.MAX_POOL_SIZE
+            )
+        }
     }
 }
