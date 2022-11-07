@@ -21,8 +21,21 @@ class AddShopItemViewModel : ViewModel() {
     val errorInputName: LiveData<Boolean>
         get() = _errorInputName
 
+    private val _errorInputCount = MutableLiveData<Boolean>()
+    val errorInputCount: LiveData<Boolean>
+        get() = _errorInputCount
+
+    private val _shopItem = MutableLiveData<ShopItem>()
+    val shopItem: LiveData<ShopItem>
+        get() = _shopItem
+
+    private val _closeAddActivity = MutableLiveData<Unit>()
+    val closeAddActivity: LiveData<Unit>
+        get() = _closeAddActivity
+
     fun getShopItem(shopItemId: Int){
         val item = getShopItemUseCase.getShopItem(shopItemId)
+        _shopItem.value = item
     }
 
     fun addShopItem(inputName:String?, inputCount:String?){
@@ -32,6 +45,7 @@ class AddShopItemViewModel : ViewModel() {
         if(fieldsValid){
             val shopItem = ShopItem(name, count, true)
             addShopItemUseCase.addShopItem(shopItem)
+            finishWorkScreen()
         }
     }
 
@@ -40,8 +54,11 @@ class AddShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldsValid = validateInput(name, count)
         if(fieldsValid){
-            val shopItem = ShopItem(name, count, true)
-            editShopItemUseCase.editShopItem(shopItem)
+            _shopItem.value?.let {
+                val item = it.copy(name = name, count = count)
+                editShopItemUseCase.editShopItem(item)
+                finishWorkScreen()
+            }
         }
     }
 
@@ -62,7 +79,7 @@ class AddShopItemViewModel : ViewModel() {
             result = false
         }
         if(count <= 0){
-            //TODO: show error input count
+            _errorInputCount.value = true
             result = false
         }
         return result
@@ -70,5 +87,11 @@ class AddShopItemViewModel : ViewModel() {
 
     private fun resetErrorInputName(){
         _errorInputName.value = false
+    }
+    private fun resetErrorInputCount(){
+        _errorInputCount.value = false
+    }
+    private fun finishWorkScreen(){
+        _closeAddActivity.value = Unit
     }
 }
