@@ -3,4 +3,7 @@
     <string name="hit_name">Name</string>
     <string name="hint_count">Count</string>
     <string name="btn_save">Save</string>
+
+    <string name="error_input_count">Error Count</string>
+    <string name="error_input_name">Error Name</string>
 </resources>
