@@ -1,8 +1,11 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.main
 
 import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.ShopListRepositoryImpl
-import com.example.shoppinglist.domain.*
+import com.example.shoppinglist.domain.main.DeleteShopItemUseCase
+import com.example.shoppinglist.domain.main.EditShopItemUseCase
+import com.example.shoppinglist.domain.main.GetShopListUseCase
+import com.example.shoppinglist.domain.main.ShopItem
 
 class MainViewModel : ViewModel() {
 

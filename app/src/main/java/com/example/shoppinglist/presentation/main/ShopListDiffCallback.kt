@@ -1,7 +1,7 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.main
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.domain.main.ShopItem
 
 class ShopListDiffCallback(private val oldList:List<ShopItem>, private val newList:List<ShopItem>)
     :DiffUtil.Callback(){

@@ -14,11 +14,11 @@
         android:theme="@style/Theme.ShoppingList"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.AddShopItemActivity"
+            android:name=".presentation.add_shop_item.AddShopItemActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
