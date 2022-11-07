@@ -7,8 +7,11 @@ import com.example.shoppinglist.R
 
 class AddShopItemActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: AddShopItemViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_shop_item)
+        viewModel.errorInputName.observe()
     }
 }

@@ -1,12 +1,13 @@
 package com.example.shoppinglist.presentation.add_shop_item
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.ShopListRepositoryImpl
 import com.example.shoppinglist.domain.main.AddShopItemUseCase
 import com.example.shoppinglist.domain.main.EditShopItemUseCase
 import com.example.shoppinglist.domain.main.GetShopItemUseCase
 import com.example.shoppinglist.domain.main.ShopItem
-import java.lang.Exception
 
 class AddShopItemViewModel : ViewModel() {
 
@@ -15,6 +16,10 @@ class AddShopItemViewModel : ViewModel() {
     private val getShopItemUseCase = GetShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
     private val editShopItemUseCase = EditShopItemUseCase(repository)
+
+    private val _errorInputName = MutableLiveData<Boolean>()
+    val errorInputName: LiveData<Boolean>
+        get() = _errorInputName
 
     fun getShopItem(shopItemId: Int){
         val item = getShopItemUseCase.getShopItem(shopItemId)
@@ -53,7 +58,7 @@ class AddShopItemViewModel : ViewModel() {
     private fun validateInput(name:String, count:Int):Boolean{
         var result = true
         if(name.isBlank()){
-            //TODO: show error input name
+            _errorInputName.value = true
             result = false
         }
         if(count <= 0){
@@ -61,5 +66,9 @@ class AddShopItemViewModel : ViewModel() {
             result = false
         }
         return result
+    }
+
+    private fun resetErrorInputName(){
+        _errorInputName.value = false
     }
 }
