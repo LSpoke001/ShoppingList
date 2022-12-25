@@ -13,109 +13,33 @@ import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
-    private lateinit var viewModel: ShopItemViewModel
-
-    private lateinit var tilName: TextInputLayout
-    private lateinit var tilCount: TextInputLayout
-    private lateinit var etName: EditText
-    private lateinit var etCount: EditText
-    private lateinit var buttonSave: Button
-
-    private var screenMode = ""
+    private var screenMode = UNKNOWN_MODE
     private var shopItemId = ShopItem.UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseIntent()
         setContentView(R.layout.activity_shop_item)
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews()
-        addTextChangeListener()
-        launchRightMode()
-        observeViewModel()
+        if(savedInstanceState == null) {
+            launchRightMode()
+        }
     }
 
-    private fun observeViewModel() {
-        viewModel.errorInputCount.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_input_count)
-            } else {
-                null
-            }
-            tilCount.error = message
-        }
-        viewModel.errorInputName.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_input_name)
-            } else {
-                null
-            }
-            tilName.error = message
-        }
-        viewModel.shouldCloseScreen.observe(this) {
-            finish()
-        }
+    override fun onEditingFinished() {
+        finish()
     }
 
     private fun launchRightMode() {
-        when (screenMode) {
-            MODE_ADD -> launchAddMode()
-            MODE_EDIT -> launchEditMode()
+    val fragment = when (screenMode) {
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+        else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
-    }
-
-    private fun addTextChangeListener() {
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetErrorInputName()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-        etCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetErrorInputCount()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-    }
-
-    private fun launchEditMode() {
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this){
-            etName.setText(it.name)
-            etCount.setText(it.count.toString())
-        }
-        buttonSave.setOnClickListener {
-            viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-    private fun launchAddMode() {
-        buttonSave.setOnClickListener {
-            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-    private fun initViews(){
-        tilName = findViewById(R.id.til_name)
-        tilCount = findViewById(R.id.til_count)
-        etName = findViewById(R.id.et_name)
-        etCount = findViewById(R.id.et_count)
-        buttonSave = findViewById(R.id.save_button)
+    supportFragmentManager.beginTransaction()
+        .replace(R.id.shop_item_container, fragment)
+        .commit()
     }
 
     private fun parseIntent(){
@@ -139,6 +63,7 @@ class ShopItemActivity : AppCompatActivity() {
         private const val EXTRA_MODE_SCREEN = "extra_mode"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
+        private const val UNKNOWN_MODE = ""
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
 
         fun newAddIntent(context: Context): Intent{
@@ -154,6 +79,4 @@ class ShopItemActivity : AppCompatActivity() {
             return intent
         }
     }
-
-
 }
